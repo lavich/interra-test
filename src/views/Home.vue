@@ -1,18 +1,21 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    Ваши поля:
+    <ul>
+      <li v-for="(fieldName, idx) in fields" :key="idx">
+        <router-link :to="{ name: 'Field', params: { fieldName } }">{{
+          fieldName
+        }}</router-link>
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
-
 export default {
   name: "Home",
-  components: {
-    HelloWorld
-  }
+  data: () => ({
+    fields: ["112"]
+  })
 };
 </script>
