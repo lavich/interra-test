@@ -19,6 +19,7 @@ export default Vue.extend({
 
 <style lang="scss">
 #app {
+  height: 100vh;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

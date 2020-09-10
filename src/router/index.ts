@@ -13,6 +13,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/fields/:fieldName",
     name: "Field",
+    props: true,
     component: () =>
       import(/* webpackChunkName: "field" */ "../views/Field.vue")
   },
