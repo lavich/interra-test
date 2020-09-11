@@ -2,7 +2,14 @@
   <div class="field">
     <MainCard class="field__card">
       <h1>Операции на поле {{ fieldName }}</h1>
-      {{ loading }}
+      <div class="field__actions">
+        <RadioSelector v-model="selectedOption" :options="filteredOptions" />
+        <button class="round-button">
+          <span class="icon-plus" style="margin-right: 5px;"></span>
+          Добавить операцию
+        </button>
+      </div>
+      <FieldTable :operations="fieldOperations" />
     </MainCard>
   </div>
 </template>
@@ -10,7 +17,9 @@
 <script lang="ts">
 import Vue from "vue";
 
+import FieldTable from "@/components/FieldTable.vue";
 import MainCard from "@/components/MainCard.vue";
+import RadioSelector from "@/components/RadioSelector.vue";
 import { fetchFieldOperations } from "@/api";
 import Operation from "src/models/Operation";
 
@@ -24,10 +33,14 @@ export default Vue.extend({
   },
   data: () => ({
     fieldOperations: [] as Operation[],
+    filteredOptions: ["запланированные операции", "выполненные операции"],
+    selectedOption: 0,
     loading: false
   }),
   components: {
-    MainCard
+    FieldTable,
+    MainCard,
+    RadioSelector
   },
   methods: {
     async fetchOperations() {
@@ -57,6 +70,17 @@ export default Vue.extend({
     max-width: 870px;
     height: 100%;
     margin: auto;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+
+    > :last-child {
+      justify-self: end;
+    }
   }
 }
 </style>

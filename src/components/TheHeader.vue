@@ -1,5 +1,5 @@
 <template functional>
-  <div class="header"></div>
+  <header class="header"></header>
 </template>
 
 <style scoped lang="scss">
