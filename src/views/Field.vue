@@ -9,13 +9,14 @@
           Добавить операцию
         </button>
       </div>
-      <FieldTable :operations="fieldOperations" />
+      <FieldTable :operations="filteredFieldOperations" />
     </MainCard>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
+import moment from "moment";
 
 import FieldTable from "@/components/FieldTable.vue";
 import MainCard from "@/components/MainCard.vue";
@@ -25,6 +26,11 @@ import Operation from "src/models/Operation";
 
 export default Vue.extend({
   name: "Field",
+  components: {
+    FieldTable,
+    MainCard,
+    RadioSelector
+  },
   props: {
     fieldName: {
       type: String,
@@ -37,10 +43,18 @@ export default Vue.extend({
     selectedOption: 0,
     loading: false
   }),
-  components: {
-    FieldTable,
-    MainCard,
-    RadioSelector
+  computed: {
+    // фильтрация запланированных и выполненных операций
+    filteredFieldOperations(): Operation[] {
+      return this.fieldOperations.filter(operation => {
+        const { year, month, day } = operation.date;
+        const opDate = moment()
+          .year(year)
+          .month(month)
+          .date(day);
+        return this.selectedOption ? opDate < moment() : opDate >= moment();
+      });
+    }
   },
   methods: {
     async fetchOperations() {

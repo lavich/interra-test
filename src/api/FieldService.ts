@@ -49,6 +49,30 @@ export default class FieldService {
             area: 48.0,
             comment: null,
             assessment: null
+        }),
+        new Operation({
+            id: 'f112-o3',
+            type: OperationType.BOWLING,
+            date: { year: 2021, month: 3, day: 26 },
+            area: 48.2,
+            comment: null,
+            assessment: null
+        }),
+        new Operation({
+            id: 'f112-o4',
+            type: OperationType.WATERING,
+            date: { year: 2021, month: 4, day: 2 },
+            area: 48.1,
+            comment: null,
+            assessment: null
+        }),
+        new Operation({
+            id: 'f112-o5',
+            type: OperationType.HARVESTING,
+            date: { year: 2021, month: 6, day: 20 },
+            area: 48.0,
+            comment: null,
+            assessment: null
         })
     ];
 

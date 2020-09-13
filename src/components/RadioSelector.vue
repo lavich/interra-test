@@ -23,7 +23,7 @@ export default Vue.extend({
   name: "RadioSelector",
   props: {
     value: {
-      type: String,
+      type: Number,
       required: true
     },
     options: {
