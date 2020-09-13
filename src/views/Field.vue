@@ -46,14 +46,19 @@ export default Vue.extend({
   computed: {
     // фильтрация запланированных и выполненных операций
     filteredFieldOperations(): Operation[] {
-      return this.fieldOperations.filter(operation => {
-        const { year, month, day } = operation.date;
-        const opDate = moment()
-          .year(year)
-          .month(month)
-          .date(day);
-        return this.selectedOption ? opDate < moment() : opDate >= moment();
-      });
+      return this.fieldOperations
+        .filter(operation => {
+          const { year, month, day } = operation.date;
+          const opDate = moment()
+            .year(year)
+            .month(month)
+            .date(day);
+          return this.selectedOption ? opDate < moment() : opDate >= moment();
+        })
+        .map(operation => ({
+          ...operation,
+          culture: "Пшеница озимая"
+        }));
     }
   },
   methods: {

@@ -1,44 +1,18 @@
 <template>
-  <table cellspacing="0" class="field-table">
-    <thead class="field-table__head">
-      <tr>
-        <td v-for="header in headers" :key="header.title">
-          <label class="field-table__filter">
-            <input
-              v-if="header.filter"
-              v-model="selectedFilter"
-              :value="header.type"
-              :checked="selectedFilter === header.type"
-              type="radio"
-              class="visually-hidden"
-            />
-            <span>{{ header.title }}</span>
-          </label>
-        </td>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="(operation, idx) in operations" :key="idx">
-        <td width="10%">{{ operation.date | formatDate }}</td>
-        <td width="50%">{{ formatType(operation.type) }}</td>
-        <td width="20%">Пшеница озимая</td>
-        <td width="20%" :class="assessmentClass(operation.assessment)">
-          {{ formatAssessment(operation.assessment) }}
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <VueGoodTable :columns="columns" :rows="operations" />
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from "vue";
 import moment from "moment";
+import { VueGoodTable } from "vue-good-table";
 
 import Operation, { Assessment, OperationType } from "@/models/Operation";
 import TDate from "@/models/TDate";
 
 export default Vue.extend({
   name: "FieldTable",
+  components: { VueGoodTable },
   props: {
     operations: {
       type: Array as PropType<Operation[]>,
@@ -56,41 +30,93 @@ export default Vue.extend({
         .format("DD MMM YYYY");
     }
   },
-  data: () => ({
-    headers: [
-      { type: "date", title: "Дата", filter: true },
-      { type: "type", title: "Операция", filter: true },
-      { title: "Культура" },
-      { type: "assessment", title: "Качество", filter: true }
-    ],
-    selectedFilter: "date"
-  }),
+  computed: {
+    columns(): any[] {
+      return [
+        {
+          label: "Дата",
+          field: "date",
+          formatFn: this.formatDate,
+          sortFn: this.sortDate,
+          width: "15%"
+        },
+        {
+          label: "Операция",
+          field: "type",
+          formatFn: this.formatType,
+          sortFn: this.sortType,
+          width: "45%"
+        },
+        {
+          label: "Культура",
+          field: "culture",
+          sortable: false,
+          width: "20%"
+        },
+        {
+          label: "Качество",
+          field: "assessment",
+          formatFn: this.formatAssessment,
+          sortFn: this.sortAssessment,
+          tdClass: this.assessmentClass,
+          width: "20%"
+        }
+      ];
+    }
+  },
   methods: {
+    sortDate(x: TDate, y: TDate) {
+      return x.year - y.year || x.month - y.month || x.day - y.day;
+    },
+    formatDate(date: TDate): string {
+      return moment()
+        .year(date.year)
+        .month(date.month)
+        .date(date.day)
+        .locale("ru")
+        .format("DD MMM YYYY");
+    },
+    sortType(x: number, y: number) {
+      return x - y;
+    },
     formatType(value: number): string {
       return this.$t(OperationType[value]).toString();
+    },
+    sortAssessment(x: number | null, y: number | null) {
+      if (x !== null) {
+        if (y !== null) {
+          return x - y;
+        }
+        return -1;
+      }
+      return 1;
     },
     formatAssessment(value: number | null): string {
       return value !== null
         ? this.$t(Assessment[value]).toString()
         : this.$t("WITHOUT_RATING").toString();
     },
-    assessmentClass(value: number | null): string[] {
-      return ["assessment", `assessment--${value}`];
+    assessmentClass({ assessment }: { assessment: number | null }): string {
+      return `assessment assessment--${assessment}`;
     }
   }
 });
 </script>
 
-<style scoped lang="scss">
-.field-table {
+<style lang="scss">
+.vgt-table {
   width: 100%;
+  border-spacing: 0;
 
   tr {
-    td:first-child {
-      padding-left: 10px;
-    }
-    td:last-child {
-      padding-right: 10px;
+    th,
+    td {
+      &:first-child {
+        padding-left: 10px;
+      }
+      &:last-child {
+        padding-right: 10px;
+      }
     }
   }
 
@@ -99,6 +125,7 @@ export default Vue.extend({
     font-weight: 500;
     background: #edeeee;
     user-select: none;
+    text-align: left;
   }
 
   tbody tr {
@@ -145,9 +172,7 @@ export default Vue.extend({
     }
   }
 
-  &__filter {
-    height: 40px;
-    border: none;
+  .sortable {
     cursor: pointer;
 
     span::after {
@@ -158,12 +183,17 @@ export default Vue.extend({
       height: 0;
       border-style: solid;
       border-width: 5px 5px 0 5px;
-      border-color: #a7a9ac transparent transparent transparent; //
+      border-color: #a7a9ac transparent transparent transparent;
     }
+  }
 
-    input:checked + span::after {
-      border-color: #007bff transparent transparent transparent;
-    }
+  .sorting span::after {
+    border-color: #007bff transparent transparent transparent;
+  }
+
+  .sorting-desc span::after {
+    border-width: 0 5px 5px 5px;
+    border-color: transparent transparent #007bff transparent;
   }
 }
 </style>

@@ -39,9 +39,10 @@ export default Vue.extend({
   &__label {
     display: inline-block;
     padding: 12px 0;
-    cursor: pointer;
 
     span {
+      user-select: none;
+      cursor: pointer;
       font-weight: 500;
       font-size: 11px;
       line-height: 13px;
@@ -52,6 +53,7 @@ export default Vue.extend({
 
     input:checked + span {
       color: #333333;
+      cursor: default;
     }
   }
 

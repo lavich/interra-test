@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    Ваши поля:
+    <h1>Ваши поля:</h1>
     <ul>
       <li v-for="(fieldName, idx) in fields" :key="idx">
         <router-link :to="{ name: 'Field', params: { fieldName } }">{{
